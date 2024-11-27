@@ -1,12 +1,14 @@
-package com.anrry.petspot.modules.pet.controllers;
+package com.anrry.petspot.modules.pet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.anrry.petspot.modules.pet.Pet;
-import com.anrry.petspot.modules.pet.services.PetService;
+import com.anrry.petspot.modules.vaccine.Vaccine;
+import com.anrry.petspot.modules.vaccine.VaccineService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class PetController {
 
   @Autowired
   private PetService petService;
+
+  @Autowired
+  private VaccineService vaccineService;
 
   @GetMapping
   public ResponseEntity<List<Pet>> getAllPets() {
@@ -31,10 +36,24 @@ public class PetController {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @GetMapping("/{id}/vaccines")
+  public ResponseEntity<List<Vaccine>> getVaccinesForPet(@PathVariable Integer id) {
+    Pet pet = petService.getPetById(id)
+        .orElseThrow(() -> new RuntimeException("Pet not found with id " + id));
+    List<Vaccine> vaccines = vaccineService.getVaccinesBySpecies(pet.getSpecies());
+    return new ResponseEntity<>(vaccines, HttpStatus.OK);
+  }
+
   @PostMapping
-  public ResponseEntity<Pet> createPet(@RequestBody Pet pet) {
+  public ResponseEntity<Pet> createPet(@Valid @RequestBody Pet pet) {
     Pet createdPet = petService.createPet(pet);
     return new ResponseEntity<>(createdPet, HttpStatus.CREATED);
+  }
+
+  @PostMapping("/{id}/vaccines")
+  public ResponseEntity<Pet> addVaccinesToPet(@PathVariable Integer id, @Valid @RequestBody List<Integer> vaccineIds) {
+    Pet updatedPet = petService.addVaccinesToPet(id, vaccineIds);
+    return new ResponseEntity<>(updatedPet, HttpStatus.OK);
   }
 
   @PutMapping("/{id}")

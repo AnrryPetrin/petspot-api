@@ -1,8 +1,12 @@
 package com.anrry.petspot.modules.pet;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.anrry.petspot.modules.owner.Owner;
+import com.anrry.petspot.modules.vaccine.Vaccine;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -60,7 +64,13 @@ public class Pet {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "owner_id", nullable = false)
+  @JsonBackReference
   private Owner owner;
+
+  @ManyToMany
+  @JoinTable(name = "pet_vaccine", joinColumns = @JoinColumn(name = "pet_id"), inverseJoinColumns = @JoinColumn(name = "vaccine_id"))
+  @Builder.Default
+  private List<Vaccine> vaccines = new ArrayList<>();
 
   // Converters
   public PetDTO toDTO() {

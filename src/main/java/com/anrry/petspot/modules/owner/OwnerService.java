@@ -1,10 +1,7 @@
-package com.anrry.petspot.modules.owner.services;
+package com.anrry.petspot.modules.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.anrry.petspot.modules.owner.Owner;
-import com.anrry.petspot.modules.owner.OwnerRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +29,7 @@ public class OwnerService {
       owner.setName(ownerDetails.getName());
       owner.setEmail(ownerDetails.getEmail());
       owner.setPhone(ownerDetails.getPhone());
+      owner.setPassword(ownerDetails.getPassword());
       return ownerRepository.save(owner);
     }).orElseThrow(() -> new RuntimeException("Owner not found with id " + id));
   }

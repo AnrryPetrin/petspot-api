@@ -14,7 +14,7 @@ public class CorsConfig {
       @Override
       public void addCorsMappings(@SuppressWarnings("null") CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:8081") // URL do seu frontend Vue.js
+            .allowedOrigins("http://localhost:8080")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);

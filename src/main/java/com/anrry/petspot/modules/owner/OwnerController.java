@@ -1,12 +1,11 @@
-package com.anrry.petspot.modules.owner.controllers;
+package com.anrry.petspot.modules.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.anrry.petspot.modules.owner.Owner;
-import com.anrry.petspot.modules.owner.services.OwnerService;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +31,13 @@ public class OwnerController {
   }
 
   @PostMapping
-  public ResponseEntity<Owner> createOwner(@RequestBody Owner owner) {
+  public ResponseEntity<Owner> createOwner(@Valid @RequestBody Owner owner) {
     Owner createdOwner = ownerService.createOwner(owner);
     return new ResponseEntity<>(createdOwner, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Owner> updateOwner(@PathVariable Integer id, @RequestBody Owner ownerDetails) {
+  public ResponseEntity<Owner> updateOwner(@PathVariable Integer id, @Valid @RequestBody Owner ownerDetails) {
     try {
       Owner updatedOwner = ownerService.updateOwner(id, ownerDetails);
       return new ResponseEntity<>(updatedOwner, HttpStatus.OK);

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 
-  // Custom query methods
   List<Owner> findByNameContainingIgnoreCase(String name);
 
   Optional<Owner> findByEmail(String email);
@@ -20,5 +19,7 @@ public interface OwnerRepository extends JpaRepository<Owner, Integer> {
   boolean existsByEmail(String email);
 
   boolean existsByPhone(String phone);
+
+  
 
 }

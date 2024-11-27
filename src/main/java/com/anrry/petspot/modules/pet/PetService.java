@@ -1,10 +1,10 @@
-package com.anrry.petspot.modules.pet.services;
+package com.anrry.petspot.modules.pet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.anrry.petspot.modules.pet.Pet;
-import com.anrry.petspot.modules.pet.PetRepository;
+import com.anrry.petspot.modules.vaccine.Vaccine;
+import com.anrry.petspot.modules.vaccine.VaccineRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +14,9 @@ public class PetService {
 
   @Autowired
   private PetRepository petRepository;
+
+  @Autowired
+  private VaccineRepository vaccineRepository;
 
   public List<Pet> getAllPets() {
     return petRepository.findAll();
@@ -42,6 +45,30 @@ public class PetService {
   }
 
   public void deletePet(Integer id) {
-    petRepository.deleteById(id);
+    if (petRepository.existsById(id)) {
+      petRepository.deleteById(id);
+    } else {
+      throw new RuntimeException("Pet not found with id " + id);
+    }
   }
+
+  public Pet addVaccinesToPet(Integer petId, List<Integer> vaccineIds) {
+    Pet pet = petRepository.findById(petId)
+        .orElseThrow(() -> new RuntimeException("Pet not found with id " + petId));
+
+    List<Vaccine> vaccines = vaccineRepository.findAllById(vaccineIds);
+
+    if (vaccines.isEmpty()) {
+      throw new RuntimeException("No valid vaccines found for the given IDs");
+    }
+
+    for (Vaccine vaccine : vaccines) {
+      if (!pet.getVaccines().contains(vaccine)) {
+        pet.getVaccines().add(vaccine);
+      }
+    }
+
+    return petRepository.save(pet);
+  }
+
 }
